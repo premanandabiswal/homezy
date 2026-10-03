@@ -1,0 +1,105 @@
+{
+  "users": [
+    {
+      "id": "u1",
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "password": "password123",
+      "role": "customer",
+      "phone": "+91 9876543210",
+      "addresses": [
+        {
+          "id": "a1",
+          "label": "Home",
+          "address": "123 Main St, Kormangala, Bangalore"
+        }
+      ],
+      "city": "Bangalore",
+      "preferredTime": "Morning",
+      "photo": "https://i.pravatar.cc/300?img=12"
+    },
+    {
+      "id": "p1",
+      "name": "Amit Kumar",
+      "email": "amit@example.com",
+      "password": "password123",
+      "role": "provider",
+      "phone": "+91 8765432109",
+      "services": [
+        "s1",
+        "s2"
+      ],
+      "rating": 4.8,
+      "jobsCompleted": 145,
+      "earnings": 45000
+    },
+    {
+      "id": "a1",
+      "name": "System Admin",
+      "email": "admin@homezy.com",
+      "password": "admin",
+      "role": "admin",
+      "phone": "+91 0000000000"
+    },
+    {
+      "id": "u1787379358173",
+      "name": "premananda biswal",
+      "email": "prem@gmail.com",
+      "password": "prem2006",
+      "role": "customer",
+      "addresses": [
+        {
+          "id": "new",
+          "label": "Home",
+          "address": "Bhubaneswar , Odisha"
+        }
+      ],
+      "phone": "+918018627623",
+      "city": "bhubaneswar",
+      "preferredTime": "Morning"
+    },
+    {
+      "id": "u1787383921443",
+      "name": "p",
+      "email": "pprem@gmail.com",
+      "password": "prem2005",
+      "role": "customer",
+      "addresses": []
+    }
+  ],
+  "bookings": [
+    {
+      "id": "HZ643960",
+      "customerId": "u1787379358173",
+      "serviceId": "s1",
+      "providerId": "p1",
+      "date": "2026-08-04",
+      "time": "01:00 PM",
+      "status": "Pending",
+      "amount": 299,
+      "address": "fghjkl"
+    },
+    {
+      "id": "HZ102948",
+      "customerId": "u1",
+      "providerId": "p1",
+      "serviceId": "s1",
+      "date": "2026-08-25",
+      "time": "10:00 AM",
+      "status": "Completed",
+      "amount": 299,
+      "address": "123 Main St, Kormangala, Bangalore"
+    },
+    {
+      "id": "HZ102949",
+      "customerId": "u1",
+      "providerId": "p1",
+      "serviceId": "s2",
+      "date": "2026-08-28",
+      "time": "02:00 PM",
+      "status": "Confirmed",
+      "amount": 999,
+      "address": "123 Main St, Kormangala, Bangalore"
+    }
+  ]
+}

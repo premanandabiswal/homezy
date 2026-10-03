@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOMEZY Platform - Premium Home Services</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js for Admin Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Razorpay Checkout -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-[#FAFAFA] text-slate-900 antialiased selection:bg-amber-200 selection:text-slate-900 flex flex-col min-h-screen">
+
+    <header id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500 py-4 sm:py-6 bg-transparent">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
+            <div onclick="router.navigate('home')" class="flex items-center gap-3 cursor-pointer group">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/30 group-hover:scale-105 transition-transform">
+                    <i data-lucide="home" class="text-white w-5 h-5 sm:w-6 sm:h-6"></i>
+                </div>
+                <span class="text-xl sm:text-2xl font-black tracking-tighter text-slate-900">HOMEZY</span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-1">
+                <button onclick="router.navigate('services')" class="px-4 py-2 text-slate-600 hover:text-slate-900 font-semibold rounded-xl hover:bg-slate-100/50 transition-all">Services</button>
+                <button onclick="router.navigate('home')" class="px-4 py-2 text-slate-600 hover:text-slate-900 font-semibold rounded-xl hover:bg-slate-100/50 transition-all">Offers</button>
+                <button onclick="router.navigate('home')" class="px-4 py-2 text-slate-600 hover:text-slate-900 font-semibold rounded-xl hover:bg-slate-100/50 transition-all">About</button>
+                
+                <div class="w-px h-6 bg-slate-200 mx-4"></div>
+
+                <div id="auth-nav-container" class="flex items-center gap-3">
+                    <!-- Dynamically populated based on auth state -->
+                </div>
+                <button onclick="router.navigate('cart')" class="relative p-2.5 text-slate-600 hover:text-slate-900 hover:bg-amber-50 rounded-xl transition-all cursor-pointer" title="View cart">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-amber-500 text-slate-900 rounded-full text-[10px] font-black flex items-center justify-center">0</span>
+                </button>
+            </nav>
+
+            <!-- Mobile Toggle -->
+            <button class="md:hidden p-2 text-slate-900 bg-white/80 backdrop-blur-sm rounded-xl border border-slate-200 shadow-sm" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-2xl border-t border-slate-100 px-6 py-6 flex flex-col gap-3 shadow-2xl absolute w-full top-full">
+            <button onclick="router.navigate('services'); toggleMobileMenu();" class="text-left py-3 px-4 rounded-xl hover:bg-slate-50 text-slate-900 font-bold text-lg">Services</button>
+            <button onclick="router.navigate('home'); toggleMobileMenu();" class="text-left py-3 px-4 rounded-xl hover:bg-slate-50 text-slate-900 font-bold text-lg">Offers & Deals</button>
+            <div class="h-px bg-slate-100 my-1"></div>
+            <div id="mobile-auth-container">
+                <!-- Mobile Auth links -->
+            </div>
+            <button onclick="router.navigate('cart'); toggleMobileMenu();" class="text-left py-3 px-4 rounded-xl hover:bg-amber-50 text-slate-900 font-bold text-lg flex items-center gap-3"><i data-lucide="shopping-cart" class="w-5 h-5"></i>Cart <span id="mobile-cart-count" class="bg-amber-500 rounded-full px-2 py-0.5 text-xs">0</span></button>
+        </div>
+    </header>
+
+    <main id="app-container" class="flex-grow">
+        <!-- Dynamic Views rendered here -->
+    </main>
+
+    <footer class="bg-slate-950 text-slate-400 py-16 sm:py-20 relative overflow-hidden mt-auto">
+        <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-12 gap-10 sm:gap-12 relative z-10">
+            <div class="sm:col-span-2 md:col-span-4">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                        <i data-lucide="home" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-2xl font-black text-white tracking-tighter">HOMEZY</span>
+                </div>
+                <p class="text-sm mb-8 leading-relaxed max-w-sm">
+                    Elevating your living experience. Book trusted, verified professionals for every home service with an unparalleled ease.
+                </p>
+            </div>
+            
+            <div class="sm:col-span-1 md:col-span-2 md:col-start-6">
+                <h4 class="text-white font-bold mb-4 sm:mb-6 tracking-wide">Services</h4>
+                <ul class="space-y-3 text-sm font-medium">
+                    <li onclick="router.navigate('services')" class="hover:text-amber-400 cursor-pointer transition-colors">Cleaning</li>
+                    <li onclick="router.navigate('services')" class="hover:text-amber-400 cursor-pointer transition-colors">AC Repair</li>
+                    <li onclick="router.navigate('services')" class="hover:text-amber-400 cursor-pointer transition-colors">Plumbing</li>
+                    <li onclick="router.navigate('services')" class="hover:text-amber-400 cursor-pointer transition-colors">Electrical</li>
+                </ul>
+            </div>
+            
+            <div class="sm:col-span-1 md:col-span-2">
+                <h4 class="text-white font-bold mb-4 sm:mb-6 tracking-wide">Company</h4>
+                <ul class="space-y-3 text-sm font-medium">
+                    <li class="hover:text-amber-400 cursor-pointer transition-colors">About Us</li>
+                    <li class="hover:text-amber-400 cursor-pointer transition-colors">Careers</li>
+                    <li class="hover:text-amber-400 cursor-pointer transition-colors">Terms</li>
+                    <li class="hover:text-amber-400 cursor-pointer transition-colors">Privacy</li>
+                </ul>
+            </div>
+            
+            <div class="sm:col-span-2 md:col-span-3">
+                <h4 class="text-white font-bold mb-4 sm:mb-6 tracking-wide">Contact</h4>
+                <ul class="space-y-3 text-sm font-medium">
+                    <li class="flex items-center gap-3"><i data-lucide="map-pin" class="w-5 h-5 text-slate-500 flex-shrink-0"></i> Bangalore, India</li>
+                    <li class="flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-slate-500 flex-shrink-0"></i> support@homezy.com</li>
+                    <li class="flex items-center gap-3"><i data-lucide="phone" class="w-5 h-5 text-slate-500 flex-shrink-0"></i> +91 1800 123 4567</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-12 sm:mt-16 pt-8 border-t border-slate-800/50 text-sm font-medium flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+            <p>© 2026 HOMEZY Technologies. All rights reserved.</p>
+            <div class="flex items-center gap-2">
+                <span>Made with</span>
+                <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                <span>in India</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mock Database State
+        const DB = {
+            users: [
+                { id: 'u1', name: 'Rahul Sharma', email: 'rahul@example.com', password: 'password123', role: 'customer', phone: '+91 9876543210', addresses: [{ id: 'a1', label: 'Home', address: '123 Main St, Kormangala, Bangalore' }] },
+                { id: 'p1', name: 'Amit Kumar', email: 'amit@example.com', password: 'password123', role: 'provider', phone: '+91 8765432109', services: ['s1', 's2'], rating: 4.8, jobsCompleted: 145, earnings: 45000 },
+                { id: 'a1', name: 'System Admin', email: 'admin@homezy.com', password: 'admin', role: 'admin', phone: '+91 0000000000' }
+            ],
+            categories: [
+                { id: 'c1', name: 'Cleaning', icon: 'sparkles', color: 'from-blue-400 to-indigo-500', shadow: 'shadow-blue-500/30', image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop' },
+                { id: 'c2', name: 'Repairs', icon: 'wrench', color: 'from-orange-400 to-red-500', shadow: 'shadow-orange-500/30', image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop' },
+                { id: 'c3', name: 'Maintenance', icon: 'home', color: 'from-emerald-400 to-teal-500', shadow: 'shadow-emerald-500/30', image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=800&auto=format&fit=crop' },
+                { id: 'c4', name: 'Security', icon: 'shield', color: 'from-purple-400 to-pink-500', shadow: 'shadow-purple-500/30', image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?q=80&w=800&auto=format&fit=crop' }
+            ],
+            services: [
+                { 
+                    id: 's1', 
+                    title: 'AC Service & Repair', 
+                    categoryId: 'c2', 
+                    description: 'Professional AC inspection, repair and maintenance with 30-day warranty. Complete gas checking and cooling optimization.', 
+                    price: 299, 
+                    rating: 4.8, 
+                    reviews: 342, 
+                    image: 'https://images.unsplash.com/photo-1621905252507-b35492cc74b4?q=80&w=800&auto=format&fit=crop',
+                    features: ['Gas Check', 'Filter Cleaning', 'Cooling Check', 'Coil Wash'] 
+                },
+                { 
+                    id: 's2', 
+                    title: 'Home Deep Cleaning', 
+                    categoryId: 'c1', 
+                    description: 'Complete deep cleaning of your home including bathrooms, kitchen, and hard-to-reach areas using eco-friendly products.', 
+                    price: 999, 
+                    rating: 4.9,   
+                    reviews: 856, 
+                    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop',
+                    features: ['Floor Scrubbing', 'Dusting', 'Stain Removal', 'Sanitization'] 
+                },
+                { 
+                    id: 's3', 
+                    title: 'Plumbing Services', 
+                    categoryId: 'c2', 
+                    description: 'Fix leaks, blockages, and install new fixtures with expert precision by certified master plumbers.', 
+                    price: 249, 
+                    rating: 4.7, 
+                    reviews: 120, 
+                    image: 'https://images.unsplash.com/photo-1542013936-6e0b4d457c90?q=80&w=800&auto=format&fit=crop',
+                    features: ['Leak Fix', 'Pipe Fitting', 'Drain Unblocking', 'Tap Installation'] 
+                },
+                { 
+                    id: 's4', 
+                    title: 'Electrician Expert', 
+                    categoryId: 'c2', 
+                    description: 'Wiring, switch repair, appliance installation, and safety fault finding with certified electricians.', 
+                    price: 199, 
+                    rating: 4.6, 
+                    reviews: 450, 
+                    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop',
+                    features: ['Switch Repair', 'Wiring Inspection', 'Fan Installation', 'MCB Upgrade'] 
+                },
+                { 
+                    id: 's5', 
+                    title: 'Daily Maid Service', 
+                    categoryId: 'c1', 
+                    description: 'Reliable daily dusting, sweeping, mopping, and basic vessel cleaning for clean living spaces.', 
+                    price: 499, 
+                    rating: 4.5, 
+                    reviews: 620, 
+                    image: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?q=80&w=800&auto=format&fit=crop',
+                    features: ['Sweeping', 'Mopping', 'Vessel Cleaning', 'Surface Wipe'] 
+                },
+                { 
+                    id: 's6', 
+                    title: 'Advanced Pest Control', 
+                    categoryId: 'c3', 
+                    description: 'Eliminate cockroaches, termites, and other pests safely and effectively with long-lasting protection.', 
+                    price: 799, 
+                    rating: 4.8, 
+                    reviews: 210, 
+                    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=800&auto=format&fit=crop',
+                    features: ['Cockroach Control', 'Termite Treatment', 'Bedbug Eradication', 'Herbal Spray'] 
+                },
+                { 
+                    id: 's7', 
+                    title: 'Smart Lock & Security Setup', 
+                    categoryId: 'c4', 
+                    description: 'Professional installation of smart video doorbells, biometric door locks, and CCTV systems.', 
+                    price: 1299, 
+                    rating: 4.9, 
+                    reviews: 98, 
+                    image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?q=80&w=800&auto=format&fit=crop',
+                    features: ['CCTV Mounting', 'Biometric Setup', 'Mobile App Sync', 'Wiring Hide'] 
+                },
+                { 
+                    id: 's8', 
+                    title: 'Sofa & Carpet Shampooing', 
+                    categoryId: 'c1', 
+                    description: 'Deep extraction cleaning for sofas, carpets, and mattresses to remove deep-seated dust and allergens.', 
+                    price: 699, 
+                    rating: 4.7, 
+                    reviews: 315, 
+                    image: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?q=80&w=800&auto=format&fit=crop',
+                    features: ['Shampoo Extraction', 'Stain Treatment', 'Odor Removal', 'Quick Dry Tech'] 
+                }
+            ],
+            bookings: [
+                { id: 'HZ102948', customerId: 'u1', providerId: 'p1', serviceId: 's1', date: '2026-08-25', time: '10:00 AM', status: 'Completed', amount: 299, address: '123 Main St, Kormangala, Bangalore' },
+                { id: 'HZ102949', customerId: 'u1', providerId: 'p1', serviceId: 's2', date: '2026-08-28', time: '02:00 PM', status: 'Confirmed', amount: 999, address: '123 Main St, Kormangala, Bangalore' }
+            ]
+        };
+
+        // App State
+        let currentUser = null;
+        let currentRoute = 'home';
+        let searchQuery = '';
+        let selectedCategoryFilter = 'All';
+        let selectedServiceId = null;
+        let bookingStep = 1;
+        let activeBookingData = { date: '', time: '', address: '' };
+        let cart = JSON.parse(localStorage.getItem('homezy-cart') || '[]');
+        let paymentMethod = 'UPI';
+        const API_BASE = window.location.protocol === 'file:' ? '' : '/api';
+
+        async function apiRequest(path, options = {}) {
+            const response = await fetch(`${API_BASE}${path}`, {
+                headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+                ...options
+            });
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.error || 'Request failed');
+            return payload;
+        }
+
+        async function loadUserBookings() {
+            const payload = await apiRequest(`/bookings?customerId=${encodeURIComponent(currentUser.id)}`);
+            DB.bookings = DB.bookings.filter(booking => booking.customerId !== currentUser.id);
+            DB.bookings.push(...payload.bookings);
+        }
+
+        function profileCompletion() {
+            const fields = [currentUser.name, currentUser.email, currentUser.phone, currentUser.city, currentUser.photo, currentUser.addresses?.length];
+            return Math.round(fields.filter(Boolean).length / fields.length * 100);
+        }
+
+        async function saveProfile() {
+            const addresses = [...document.querySelectorAll('[data-profile-address]')]
+                .map(input => ({ id: input.dataset.profileAddress, label: input.dataset.profileLabel, address: input.value.trim() }))
+                .filter(item => item.address);
+            try {
+                const payload = await apiRequest(`/users/${encodeURIComponent(currentUser.id)}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        name: document.getElementById('profile-name').value.trim(),
+                        email: document.getElementById('profile-email').value.trim(),
+                        phone: document.getElementById('profile-phone').value.trim(),
+                        city: document.getElementById('profile-city').value.trim(),
+                        preferredTime: document.getElementById('profile-time').value,
+                        photo: document.getElementById('profile-photo').value.trim(),
+                        addresses
+                    })
+                });
+                currentUser = payload.user;
+                const userIndex = DB.users.findIndex(user => user.id === currentUser.id);
+                if (userIndex >= 0) DB.users[userIndex] = currentUser;
+                render();
+                showToast('Profile updated successfully');
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Toast notification system
+        function showToast(message, type = 'success') {
+            const existing = document.getElementById('toast-notification');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'toast-notification';
+            toast.className = `fixed bottom-6 right-6 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-md border transition-all duration-300 transform translate-y-10 opacity-0 ${
+                type === 'success' ? 'bg-slate-900/95 border-slate-700 text-white' : 'bg-red-500/95 border-red-400 text-white'
+            }`;
+            toast.innerHTML = `
+                <i data-lucide="${type === 'success' ? 'check-circle' : 'shield-alert'}" class="w-6 h-6 text-amber-400 flex-shrink-0"></i>
+                <p class="font-medium text-sm sm:text-base">${message}</p>
+            `;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Router
+        const router = {
+            navigate: (route, param = null) => {
+                currentRoute = route;
+                if (param) selectedServiceId = param;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                render();
+            }
+        };
+
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Navbar Auth State Update
+        function updateNavbarAuth() {
+            const container = document.getElementById('auth-nav-container');
+            const mobileContainer = document.getElementById('mobile-auth-container');
+
+            if (currentUser) {
+                container.innerHTML = `
+                    <button class="relative p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-all">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                    </button>
+                    <button onclick="router.navigate('${currentUser.role === 'admin' ? 'admin' : 'dashboard'}')" class="flex items-center gap-2 text-sm font-bold bg-white border border-slate-200 hover:border-amber-400 hover:shadow-md px-2 py-1.5 pr-4 rounded-full transition-all cursor-pointer">
+                        <div class="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-white shadow-inner font-black">
+                            ${currentUser.name.charAt(0)}
+                        </div>
+                        <span>${currentUser.name.split(' ')[0]}</span>
+                    </button>
+                    <button onclick="logout()" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all cursor-pointer">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                `;
+
+                mobileContainer.innerHTML = `
+                    <button onclick="router.navigate('${currentUser.role === 'admin' ? 'admin' : 'dashboard'}'); toggleMobileMenu();" class="text-left py-3 px-4 rounded-xl hover:bg-slate-50 text-slate-900 font-bold text-lg">Dashboard (${currentUser.name})</button>
+                    <button onclick="logout(); toggleMobileMenu();" class="text-left py-3 px-4 rounded-xl hover:bg-red-50 text-red-500 font-bold text-lg">Logout</button>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="router.navigate('login')" class="px-4 py-2 text-slate-600 hover:text-slate-900 font-semibold rounded-xl hover:bg-slate-100/50 transition-all cursor-pointer">Log In</button>
+                    <button onclick="router.navigate('register')" class="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-semibold px-5 py-2.5 rounded-2xl shadow-lg hover:shadow-amber-500/40 transition-all cursor-pointer">Sign Up</button>
+                `;
+
+                mobileContainer.innerHTML = `
+                    <button onclick="router.navigate('login'); toggleMobileMenu();" class="text-left py-3 px-4 rounded-xl hover:bg-slate-50 text-slate-900 font-bold text-lg">Log In</button>
+                    <button onclick="router.navigate('register'); toggleMobileMenu();" class="text-left py-3 px-4 rounded-xl bg-amber-50 text-amber-700 font-bold text-lg">Sign Up</button>
+                `;
+            }
+            const cartCount = document.getElementById('cart-count');
+            const mobileCartCount = document.getElementById('mobile-cart-count');
+            if (cartCount) cartCount.textContent = cart.length;
+            if (mobileCartCount) mobileCartCount.textContent = cart.length;
+            lucide.createIcons();
+        }
+
+        function addToCart(serviceId, event) {
+            if (event) event.stopPropagation();
+            if (!cart.includes(serviceId)) {
+                cart.push(serviceId);
+                localStorage.setItem('homezy-cart', JSON.stringify(cart));
+                updateNavbarAuth();
+                showToast('Service added to cart');
+            } else {
+                showToast('This service is already in your cart', 'error');
+            }
+        }
+
+        function removeFromCart(serviceId) {
+            cart = cart.filter(id => id !== serviceId);
+            localStorage.setItem('homezy-cart', JSON.stringify(cart));
+            render();
+            showToast('Service removed from cart');
+        }
+
+        function startCartCheckout(serviceId) {
+            selectedServiceId = serviceId;
+            bookingStep = 1;
+            activeBookingData = { date: '', time: '', address: currentUser?.addresses?.[0]?.address || '' };
+            router.navigate('bookingFlow');
+        }
+
+        function logout() {
+            currentUser = null;
+            updateNavbarAuth();
+            router.navigate('home');
+            showToast('Logged out successfully');
+        }
+
+        function render() {
+            updateNavbarAuth();
+            const container = document.getElementById('app-container');
+            
+            if (currentRoute === 'home') container.innerHTML = renderHome();
+            else if (currentRoute === 'services') container.innerHTML = renderServices();
+            else if (currentRoute === 'serviceDetail') container.innerHTML = renderServiceDetail();
+            else if (currentRoute === 'bookingFlow') container.innerHTML = renderBookingFlow();
+            else if (currentRoute === 'cart') container.innerHTML = renderCart();
+            else if (currentRoute === 'login' || currentRoute === 'register') container.innerHTML = renderAuth(currentRoute);
+            else if (currentRoute === 'dashboard') container.innerHTML = renderDashboard();
+            else if (currentRoute === 'admin') container.innerHTML = renderAdmin();
+
+            lucide.createIcons();
+            if (currentRoute === 'admin') initAdminCharts();
+        }
+
+        // Home Page View
+        function renderHome() {
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] overflow-hidden selection:bg-amber-200 relative">
+                    <!-- Ambient Glows -->
+                    <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                        <div class="absolute top-[-10%] right-[-10%] w-[600px] sm:w-[900px] h-[600px] sm:h-[900px] bg-gradient-to-br from-amber-300/30 via-orange-400/20 to-pink-500/10 rounded-full blur-[140px] animate-pulse"></div>
+                        <div class="absolute top-[40%] left-[-15%] w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-gradient-to-tr from-blue-400/20 via-indigo-300/20 to-emerald-300/20 rounded-full blur-[130px]"></div>
+                    </div>
+
+                    <!-- Hero Section -->
+                    <section class="relative pt-28 pb-16 sm:pt-36 sm:pb-24 lg:pt-48 lg:pb-36 z-10">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                            <div>
+                                <span class="text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-white/80 backdrop-blur-md border border-slate-200 text-slate-800 shadow-sm mb-4 sm:mb-6 inline-flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                    #1 Rated Home Services Platform
+                                </span>
+                                <h1 class="text-4xl sm:text-6xl lg:text-[5rem] font-black text-slate-900 mb-4 sm:mb-6 leading-[1.05] tracking-tighter">
+                                    Your Home.<br/>
+                                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600">
+                                        Our Canvas.
+                                    </span>
+                                </h1>
+                                <p class="text-base sm:text-xl text-slate-600 mb-8 sm:mb-10 max-w-lg leading-relaxed font-medium">
+                                    Experience premium home maintenance. Book top-tier, background-verified professionals with a single tap.
+                                </p>
+                                
+                                <form onsubmit="handleHeroSearch(event)" class="relative max-w-xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] rounded-3xl bg-white/90 backdrop-blur-xl border border-white p-2.5 sm:p-3 flex flex-col sm:flex-row items-center gap-3 mb-8 sm:mb-10">
+                                    <div class="flex-grow flex items-center w-full px-2 sm:px-4">
+                                        <i data-lucide="search" class="text-slate-400 w-5 h-5 sm:w-6 sm:h-6 mr-3 flex-shrink-0"></i>
+                                        <input 
+                                            type="text" 
+                                            id="hero-search-input"
+                                            placeholder="What does your home need today?" 
+                                            class="w-full bg-transparent border-none py-2.5 sm:py-3 text-base sm:text-lg focus:outline-none text-slate-900 placeholder-slate-400 font-medium"
+                                            value="${searchQuery}"
+                                        />
+                                    </div>
+                                    <button type="submit" class="w-full sm:w-auto font-semibold rounded-2xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-900 shadow-[0_8px_20px_-4px_rgba(245,158,11,0.4)] px-6 py-3.5 flex items-center justify-center gap-2 cursor-pointer transition-all">
+                                        <span>Explore</span>
+                                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                    </button>
+                                </form>
+
+                                <div class="flex flex-wrap gap-2.5 sm:gap-4 items-center text-xs sm:text-sm font-semibold text-slate-500">
+                                    <span>Trending:</span>
+                                    ${['AC Repair', 'Deep Clean', 'Plumbing', 'Smart Lock'].map(tag => `
+                                        <button onclick="searchQuery='${tag}'; router.navigate('services');" class="px-3.5 sm:px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-full shadow-sm border border-slate-100 hover:border-amber-400 hover:text-amber-600 transition-all cursor-pointer">${tag}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Hero Right Image Collage -->
+                            <div class="relative h-[400px] sm:h-[500px] lg:h-[600px] block">
+                                <div class="grid grid-cols-2 gap-4 h-full lg:absolute lg:inset-0 items-center">
+                                    <div class="space-y-4">
+                                        <div class="rounded-[2.5rem] overflow-hidden shadow-2xl h-56 sm:h-72 border-4 border-white/80 bg-white">
+                                            <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop" alt="Cleaning" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700" />
+                                        </div>
+                                        <div class="bg-white/90 backdrop-blur-md p-4 sm:p-5 rounded-3xl shadow-lg border border-white">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center text-amber-600 font-bold">4.9</div>
+                                                <div>
+                                                    <p class="font-bold text-slate-900 text-sm">Verified Experts</p>
+                                                    <p class="text-xs text-slate-500 font-medium">100% Background Checked</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4 pt-8 sm:pt-12">
+                                        <div class="bg-slate-900 text-white p-5 sm:p-6 rounded-3xl shadow-xl border border-slate-800">
+                                            <p class="text-xs font-bold text-amber-400 uppercase tracking-widest mb-1">Instant Booking</p>
+                                            <p class="font-black text-lg sm:text-xl">Available in 30 mins</p>
+                                        </div>
+                                        <div class="rounded-[2.5rem] overflow-hidden shadow-2xl h-56 sm:h-72 border-4 border-white/80 bg-white">
+                                            <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop" alt="Repair" class="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Categories Section -->
+                    <section class="py-20 sm:py-24 bg-white/80 backdrop-blur-md relative z-10 border-t border-slate-100/80">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                            <div class="text-center mb-12 sm:mb-16">
+                                <h2 class="text-3xl sm:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight">Our Expertise</h2>
+                                <p class="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto font-medium px-4">From minor fixes to major home transformations, our specialized experts are ready to help.</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                                ${DB.categories.map(cat => `
+                                    <div onclick="selectedCategoryFilter='${cat.name}'; router.navigate('services');" class="group relative bg-[#FAFAFA] rounded-[2rem] cursor-pointer overflow-hidden border border-slate-100 hover:border-transparent transition-all duration-300 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] flex flex-col h-80">
+                                        <div class="absolute inset-0 z-0">
+                                            <img src="${cat.image}" alt="${cat.name}" class="w-full h-full object-cover opacity-80 group-hover:scale-110 transition-transform duration-700" />
+                                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
+                                        </div>
+                                        <div class="relative z-10 p-6 sm:p-8 mt-auto text-white">
+                                            <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-gradient-to-br ${cat.color} text-white ${cat.shadow} shadow-lg">
+                                                <i data-lucide="${cat.icon}" class="w-6 h-6"></i>
+                                            </div>
+                                            <h3 class="text-2xl font-black mb-1 group-hover:text-amber-400 transition-colors">${cat.name}</h3>
+                                            <p class="text-xs sm:text-sm text-slate-300 font-medium">Explore professional ${cat.name.toLowerCase()} services</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Popular Services -->
+                    <section class="py-20 sm:py-24 bg-[#FAFAFA] relative z-10">
+                        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                            <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
+                                <div>
+                                    <h2 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Most Popular Services</h2>
+                                    <p class="text-slate-500 font-medium mt-2">Book our highest rated home solutions</p>
+                                </div>
+                                <button onclick="selectedCategoryFilter='All'; router.navigate('services');" class="bg-white border-2 border-slate-200 hover:border-amber-400 font-semibold px-6 py-3 rounded-2xl transition-all flex items-center gap-2 cursor-pointer">
+                                    <span>View All Services</span>
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                ${DB.services.slice(0, 4).map(service => `
+                                    <div onclick="router.navigate('serviceDetail', '${service.id}')" class="bg-white rounded-[2rem] overflow-hidden border border-slate-100 hover:shadow-xl transition-all duration-300 cursor-pointer group flex flex-col">
+                                        <div class="h-48 overflow-hidden relative">
+                                            <img src="${service.image}" alt="${service.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-slate-900 flex items-center gap-1 shadow-sm">
+                                                <i data-lucide="star" class="w-3.5 h-3.5 text-amber-500 fill-current"></i> ${service.rating}
+                                            </div>
+                                        </div>
+                                        <div class="p-6 flex flex-col flex-grow">
+                                            <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">${service.title}</h3>
+                                            <p class="text-slate-500 text-xs sm:text-sm line-clamp-2 mb-6 font-medium">${service.description}</p>
+                                            <div class="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
+                                                <div>
+                                                    <span class="text-xs text-slate-400 font-bold uppercase">Starts at</span>
+                                                    <p class="text-xl font-black text-slate-900">₹${service.price}</p>
+                                                </div>
+                                                <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-amber-400 group-hover:text-slate-900 transition-colors">
+                                                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+
+        function handleHeroSearch(e) {
+            e.preventDefault();
+            searchQuery = document.getElementById('hero-search-input').value;
+            router.navigate('services');
+        }
+
+        // Services Catalog View
+        function renderServices() {
+            let filtered = DB.services;
+            if (selectedCategoryFilter !== 'All') {
+                const cat = DB.categories.find(c => c.name === selectedCategoryFilter);
+                if (cat) filtered = filtered.filter(s => s.categoryId === cat.id);
+            }
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                filtered = filtered.filter(s => s.title.toLowerCase().includes(q) || s.description.toLowerCase().includes(q));
+            }
+
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] pt-28 sm:pt-36 pb-24">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 sm:mb-12 gap-6">
+                            <div>
+                                <h1 class="text-3xl sm:text-5xl font-black text-slate-900 mb-3 sm:mb-4 tracking-tight">Explore Services</h1>
+                                <p class="text-base sm:text-lg text-slate-500 font-medium max-w-xl">Find the perfect verified professional for your specific needs.</p>
+                            </div>
+                            
+                            <!-- Filter Buttons -->
+                            <div class="flex overflow-x-auto pb-2 gap-2.5 sm:gap-3 no-scrollbar max-w-full">
+                                ${['All', ...DB.categories.map(c => c.name)].map(f => `
+                                    <button onclick="selectedCategoryFilter='${f}'; render();" class="px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl font-bold whitespace-nowrap transition-all duration-300 text-sm cursor-pointer ${
+                                        selectedCategoryFilter === f 
+                                            ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20 scale-105' 
+                                            : 'bg-white text-slate-500 hover:bg-slate-100 border border-slate-200'
+                                    }">${f}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                            ${filtered.map(service => {
+                                const cat = DB.categories.find(c => c.id === service.categoryId);
+                                return `
+                                    <div onclick="router.navigate('serviceDetail', '${service.id}')" class="bg-white rounded-[2rem] overflow-hidden shadow-sm border border-slate-100 hover:shadow-xl hover:border-transparent transition-all duration-300 group flex flex-col cursor-pointer">
+                                        <div class="h-52 overflow-hidden relative">
+                                            <img src="${service.image}" alt="${service.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">${cat?.name}</div>
+                                            <div class="absolute top-4 right-4 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-black flex items-center gap-1 shadow-md">
+                                                <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i> ${service.rating}
+                                            </div>
+                                        </div>
+                                        <div class="p-6 sm:p-8 flex flex-col flex-grow">
+                                            <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-2 group-hover:text-amber-600 transition-colors">${service.title}</h3>
+                                            <p class="text-slate-500 font-medium text-xs sm:text-sm mb-6 line-clamp-2 flex-grow">${service.description}</p>
+                                            <div class="flex items-center justify-between pt-5 border-t border-slate-100">
+                                                <div>
+                                                    <p class="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Starts from</p>
+                                                    <p class="text-xl sm:text-2xl font-black text-slate-900">₹${service.price}</p>
+                                                </div>
+                                                <button onclick="addToCart('${service.id}', event)" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-amber-100 text-amber-700 hover:bg-amber-400 hover:text-slate-900 transition-colors flex items-center justify-center cursor-pointer" title="Add to cart"><i data-lucide="shopping-cart" class="w-5 h-5"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        ${filtered.length === 0 ? `
+                            <div class="text-center py-24 sm:py-32 bg-white rounded-[3rem] border border-slate-100 shadow-sm mt-8">
+                                <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6"><i data-lucide="search" class="text-slate-300 w-10 h-10"></i></div>
+                                <h3 class="text-2xl font-black text-slate-900 mb-2">No services found</h3>
+                                <p class="text-slate-500 font-medium">Try adjusting your filters or search query.</p>
+                                <button onclick="selectedCategoryFilter='All'; searchQuery=''; render();" class="mt-8 bg-white border-2 border-slate-200 px-6 py-3 rounded-2xl font-bold cursor-pointer">Clear Filters</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Service Detail View
+        function renderServiceDetail() {
+            const service = DB.services.find(s => s.id === selectedServiceId) || DB.services[0];
+            const cat = DB.categories.find(c => c.id === service.categoryId);
+
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] pt-28 sm:pt-36 pb-24">
+                    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+                        <button onclick="router.navigate('services')" class="flex items-center gap-2 text-slate-500 hover:text-slate-900 mb-8 sm:mb-10 font-bold transition-colors group text-sm sm:text-base cursor-pointer">
+                            <i data-lucide="chevron-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i> Back to Services
+                        </button>
+
+                        <div class="bg-white rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-12 md:p-14 shadow-xl border border-slate-100 relative overflow-hidden">
+                            <div class="grid lg:grid-cols-3 gap-12 lg:gap-16 items-start relative z-10">
+                                <div class="lg:col-span-2">
+                                    <div class="rounded-3xl overflow-hidden mb-8 h-64 sm:h-80 shadow-lg">
+                                        <img src="${service.image}" alt="${service.title}" class="w-full h-full object-cover" />
+                                    </div>
+
+                                    <div class="flex items-center gap-4 mb-4 sm:mb-6">
+                                        <span class="text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider bg-gradient-to-r ${cat?.color} text-white shadow-md">${cat?.name}</span>
+                                        <div class="flex items-center gap-1.5 text-slate-700 text-xs sm:text-sm font-black bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-100">
+                                            <i data-lucide="star" class="w-4 h-4 text-amber-500 fill-current"></i> ${service.rating} (${service.reviews} verified reviews)
+                                        </div>
+                                    </div>
+                                    <h1 class="text-3xl sm:text-5xl font-black text-slate-900 mb-4 sm:mb-6 tracking-tight">${service.title}</h1>
+                                    <p class="text-slate-500 text-base sm:text-lg leading-relaxed mb-8 sm:mb-10 font-medium">${service.description}</p>
+                                    
+                                    <div class="bg-[#FAFAFA] p-6 sm:p-8 rounded-[2rem] border border-slate-100">
+                                        <h3 class="font-bold text-lg sm:text-xl text-slate-900 mb-4 sm:mb-6">What's included in this service</h3>
+                                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                                            ${service.features.map(f => `
+                                                <li class="flex items-start gap-3 sm:gap-4 text-slate-700 font-medium text-sm sm:text-base">
+                                                    <div class="mt-0.5 w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                                                        <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
+                                                    </div>
+                                                    ${f}
+                                                </li>
+                                            `).join('')}
+                                            <li class="flex items-start gap-3 sm:gap-4 text-slate-700 font-medium text-sm sm:text-base">
+                                                <div class="mt-0.5 w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+                                                    <i data-lucide="shield-check" class="w-4 h-4 stroke-[3]"></i>
+                                                </div>
+                                                30-Day Service Guarantee
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Pricing Card -->
+                                <div class="bg-slate-900 text-white rounded-[2.5rem] p-6 sm:p-8 shadow-2xl border border-slate-800">
+                                    <div class="text-center mb-6 sm:mb-8">
+                                        <p class="text-slate-400 text-xs sm:text-sm font-bold uppercase tracking-widest mb-2">Standard Price</p>
+                                        <div class="flex items-center justify-center gap-2">
+                                            <span class="text-xl font-medium text-slate-500">₹</span>
+                                            <span class="text-5xl sm:text-6xl font-black text-white">${service.price}</span>
+                                        </div>
+                                    </div>
+
+                                    <ul class="space-y-4 mb-8 text-xs sm:text-sm font-medium text-slate-300">
+                                        <li class="flex justify-between border-b border-slate-800 pb-3"><span>Duration</span> <span class="text-white">~2 Hours</span></li>
+                                        <li class="flex justify-between border-b border-slate-800 pb-3"><span>Equipment</span> <span class="text-white">Included</span></li>
+                                    </ul>
+
+                                    <button onclick="bookingStep = 1; activeBookingData = { date: '', time: '', address: currentUser?.addresses?.[0]?.address || '' }; router.navigate('bookingFlow');" class="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-slate-900 font-bold py-4 rounded-2xl shadow-lg transition-all cursor-pointer text-base sm:text-lg">
+                                        Book Service Now
+                                    </button>
+                                    <button onclick="addToCart('${service.id}', event)" class="w-full mt-3 bg-white border-2 border-slate-700 text-white hover:bg-slate-800 font-bold py-3.5 rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-2"><i data-lucide="shopping-cart" class="w-5 h-5"></i> Add to Cart</button>
+                                    <p class="text-center text-xs text-slate-500 mt-4 font-medium flex items-center justify-center gap-1">
+                                        <i data-lucide="shield" class="w-3.5 h-3.5"></i> No upfront payment required
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCart() {
+            const items = cart.map(id => DB.services.find(service => service.id === id)).filter(Boolean);
+            const total = items.reduce((sum, service) => sum + service.price, 0);
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] pt-28 sm:pt-36 pb-24">
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+                        <div class="mb-8"><p class="text-amber-600 text-xs font-black uppercase tracking-[0.2em] mb-2">Your selections</p><h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight">Shopping Cart</h1></div>
+                        ${items.length === 0 ? `<div class="bg-white rounded-[2rem] p-12 text-center border border-slate-100"><i data-lucide="shopping-cart" class="w-12 h-12 mx-auto text-slate-300 mb-4"></i><h2 class="text-2xl font-black mb-2">Your cart is empty</h2><p class="text-slate-500 mb-6">Choose a service and keep it ready for checkout.</p><button onclick="router.navigate('services')" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold cursor-pointer">Browse Services</button></div>` : `
+                            <div class="space-y-4 mb-6">${items.map(service => `<div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 flex items-center gap-4"><img src="${service.image}" alt="${service.title}" class="w-20 h-20 rounded-xl object-cover"><div class="flex-grow"><h3 class="font-black text-slate-900">${service.title}</h3><p class="text-sm text-slate-500 font-medium">${service.description.slice(0, 70)}...</p><p class="font-black mt-1">₹${service.price}</p></div><button onclick="removeFromCart('${service.id}')" class="p-2 text-slate-400 hover:text-red-500 cursor-pointer" title="Remove from cart"><i data-lucide="trash-2" class="w-5 h-5"></i></button></div>`).join('')}</div>
+                            <div class="bg-slate-900 text-white rounded-[2rem] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5"><div><p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Cart total</p><p class="text-3xl font-black">₹${total}</p></div><button onclick="startCartCheckout('${items[0].id}')" class="bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 px-6 py-3.5 rounded-2xl font-black cursor-pointer flex items-center gap-2"><i data-lucide="credit-card" class="w-5 h-5"></i> Checkout</button></div>
+                        `}
+                    </div>
+                </div>`;
+        }
+
+        // Booking Flow View
+        function renderBookingFlow() {
+            const service = DB.services.find(s => s.id === selectedServiceId) || DB.services[0];
+
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] pt-28 sm:pt-36 pb-24">
+                    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+                        <!-- Stepper -->
+                        <div class="flex items-center justify-between mb-10 sm:mb-12 relative">
+                            <div class="absolute top-1/2 left-[10%] right-[10%] h-1 bg-slate-200 -z-10 -translate-y-1/2 rounded-full">
+                                <div class="h-full bg-slate-900 transition-all duration-700 ease-in-out" style="width: ${(bookingStep - 1) * 50}%"></div>
+                            </div>
+                            ${[1, 2, 3].map(s => `
+                                <div class="flex flex-col items-center gap-2 sm:gap-3 bg-[#FAFAFA] px-2 sm:px-4">
+                                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-black text-sm sm:text-lg transition-all duration-500 shadow-sm ${bookingStep >= s ? 'bg-slate-900 text-white scale-110 shadow-slate-900/30' : 'bg-white text-slate-400 border border-slate-200'}">
+                                        ${bookingStep > s ? '<i data-lucide="check" class="w-5 h-5 stroke-[3]"></i>' : s}
+                                    </div>
+                                    <span class="text-[10px] sm:text-sm font-bold uppercase tracking-wider ${bookingStep >= s ? 'text-slate-900' : 'text-slate-400'}">
+                                        ${s === 1 ? 'Schedule' : s === 2 ? 'Location' : 'Review'}
+                                    </span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="bg-white rounded-[2.5rem] sm:rounded-[3rem] p-6 sm:p-12 shadow-xl border border-slate-100">
+                            ${bookingStep === 1 ? `
+                                <div>
+                                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 sm:mb-8">When do you need us?</h2>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
+                                        <div>
+                                            <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">Select Date</label>
+                                            <div class="relative">
+                                                <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+                                                <input type="date" id="booking-date" value="${activeBookingData.date}" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 pl-12 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 outline-none font-medium" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">Select Time</label>
+                                            <div class="relative">
+                                                <i data-lucide="clock" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+                                                <select id="booking-time" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 pl-12 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 outline-none font-medium appearance-none">
+                                                    <option value="">Select a preferred slot</option>
+                                                    <option value="10:00 AM" ${activeBookingData.time === '10:00 AM' ? 'selected' : ''}>10:00 AM - 11:00 AM</option>
+                                                    <option value="01:00 PM" ${activeBookingData.time === '01:00 PM' ? 'selected' : ''}>01:00 PM - 02:00 PM</option>
+                                                    <option value="04:00 PM" ${activeBookingData.time === '04:00 PM' ? 'selected' : ''}>04:00 PM - 05:00 PM</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="saveStep1()" class="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold py-4 rounded-2xl shadow-lg cursor-pointer">Continue to Location</button>
+                                </div>
+                            ` : ''}
+
+                            ${bookingStep === 2 ? `
+                                <div>
+                                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 sm:mb-8">Where should we arrive?</h2>
+                                    <div class="mb-6">
+                                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-2">Detailed Address</label>
+                                        <div class="relative">
+                                            <i data-lucide="map-pin" class="absolute left-4 top-4 text-slate-400 w-5 h-5"></i>
+                                            <textarea id="booking-address" rows="3" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 pl-12 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 outline-none font-medium">${activeBookingData.address}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <button onclick="bookingStep=1; render();" class="w-1/3 bg-white border-2 border-slate-200 font-bold py-3.5 rounded-2xl cursor-pointer">Back</button>
+                                        <button onclick="saveStep2()" class="w-2/3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold py-3.5 rounded-2xl shadow-lg cursor-pointer">Review Order</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+
+                            ${bookingStep === 3 ? `
+                                <div>
+                                    <h2 class="text-2xl sm:text-3xl font-black text-slate-900 mb-6 sm:mb-8">Final Review</h2>
+                                    <div class="bg-[#FAFAFA] rounded-[2rem] p-6 sm:p-8 border border-slate-100 mb-8">
+                                        <div class="flex justify-between items-start pb-6 border-b border-slate-200/60 mb-6">
+                                            <div>
+                                                <h4 class="font-black text-slate-900 text-xl sm:text-2xl mb-2">${service.title}</h4>
+                                                <p class="text-slate-500 text-xs sm:text-sm font-bold flex items-center gap-2">
+                                                    <i data-lucide="calendar" class="w-4 h-4"></i> ${activeBookingData.date} • <i data-lucide="clock" class="w-4 h-4"></i> ${activeBookingData.time}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="mb-6">
+                                            <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-2">Service Address</p>
+                                            <p class="text-slate-700 text-sm sm:text-base font-medium flex items-start gap-2">
+                                                <i data-lucide="map-pin" class="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5"></i> ${activeBookingData.address}
+                                            </p>
+                                        </div>
+                                        <div class="pt-6 border-t border-slate-200/60 flex justify-between items-end">
+                                            <p class="font-bold text-slate-500 text-base">Total Amount</p>
+                                            <p class="text-3xl sm:text-4xl font-black text-slate-900">₹${service.price}</p>
+                                        </div>
+                                    </div>
+                                    <div class="mb-8">
+                                        <label for="payment-method" class="block text-xs text-slate-400 uppercase font-bold tracking-widest mb-2">Payment Method</label>
+                                        <div class="relative">
+                                            <i data-lucide="wallet-cards" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+                                            <select id="payment-method" onchange="paymentMethod = this.value" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 pl-12 focus:ring-4 focus:ring-amber-500/20 focus:border-amber-500 outline-none font-medium">
+                                                ${['UPI', 'Credit / Debit Card', 'Net Banking', 'Cash on Service'].map(method => `<option value="${method}" ${paymentMethod === method ? 'selected' : ''}>${method}</option>`).join('')}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <button onclick="bookingStep=2; render();" class="w-1/3 bg-white border-2 border-slate-200 font-bold py-3.5 rounded-2xl cursor-pointer">Back</button>
+                                        <button onclick="confirmBooking()" class="w-2/3 bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold py-3.5 rounded-2xl shadow-lg cursor-pointer">Confirm Booking</button>
+                                    </div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function saveStep1() {
+            activeBookingData.date = document.getElementById('booking-date').value;
+            activeBookingData.time = document.getElementById('booking-time').value;
+            if (!activeBookingData.date || !activeBookingData.time) {
+                showToast('Please select both date and time', 'error');
+                return;
+            }
+            bookingStep = 2;
+            render();
+        }
+
+        function saveStep2() {
+            activeBookingData.address = document.getElementById('booking-address').value;
+            if (!activeBookingData.address) {
+                showToast('Please provide a valid address', 'error');
+                return;
+            }
+            bookingStep = 3;
+            render();
+        }
+
+        async function createBooking(paymentDetails = {}) {
+            const service = DB.services.find(s => s.id === selectedServiceId);
+            const payload = await apiRequest('/bookings', {
+                method: 'POST',
+                body: JSON.stringify({
+                    customerId: currentUser.id,
+                    serviceId: service.id,
+                    date: activeBookingData.date,
+                    time: activeBookingData.time,
+                    amount: service.price,
+                    address: activeBookingData.address,
+                    paymentMethod,
+                    ...paymentDetails
+                })
+            });
+            DB.bookings.unshift(payload.booking);
+            cart = cart.filter(id => id !== service.id);
+            localStorage.setItem('homezy-cart', JSON.stringify(cart));
+            showToast('Booking Confirmed Successfully!');
+            router.navigate('dashboard');
+        }
+
+        async function confirmBooking() {
+            if (!currentUser) {
+                showToast('Please log in to complete your booking', 'error');
+                router.navigate('login');
+                return;
+            }
+            const service = DB.services.find(s => s.id === selectedServiceId);
+            try {
+                if (paymentMethod === 'Cash on Service') return await createBooking();
+                const orderPayload = await apiRequest('/payments/order', {
+                    method: 'POST',
+                    body: JSON.stringify({ amount: service.price })
+                });
+                if (!window.Razorpay) throw new Error('Razorpay checkout could not be loaded');
+                const checkout = new Razorpay({
+                    key: orderPayload.keyIdc,
+                    amount: orderPayload.order.amount,
+                    currency: orderPayload.order.currency,
+                    name: 'HOMEZY',
+                    description: service.title,
+                    order_id: orderPayload.order.id,
+                    prefill: { name: currentUser.name, email: currentUser.email, contact: currentUser.phone || '' },
+                    theme: { color: '#f59e0b' },
+                    handler: async payment => {
+                        try {
+                            await apiRequest('/payments/verify', { method: 'POST', body: JSON.stringify({
+                                orderId: payment.razorpay_order_id,
+                                paymentId: payment.razorpay_payment_id,
+                                signature: payment.razorpay_signature
+                            }) });
+                            await createBooking({ paymentId: payment.razorpay_payment_id, orderId: payment.razorpay_order_id, paymentStatus: 'Paid' });
+                        } catch (error) {
+                            showToast(error.message, 'error');
+                        }
+                    },
+                    modal: { ondismiss: () => showToast('Payment was cancelled', 'error') }
+                });
+                checkout.open();
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Authentication View
+        function renderAuth(type) {
+            const isLogin = type === 'login';
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] flex items-center justify-center py-20 px-4 sm:px-6 relative overflow-hidden">
+                    <div class="max-w-md w-full bg-white/90 backdrop-blur-xl rounded-[3rem] shadow-xl p-8 sm:p-10 border border-white">
+                        <div class="text-center mb-8">
+                            <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-amber-500/30">
+                                <i data-lucide="home" class="text-white w-8 h-8"></i>
+                            </div>
+                            <h2 class="text-3xl font-black text-slate-900 tracking-tight">${isLogin ? 'Welcome Back' : 'Create Account'}</h2>
+                            <p class="text-sm text-slate-500 mt-2 font-medium">${isLogin ? 'Admin? use admin@homezy.com / admin' : 'Join HOMEZY for premium home services'}</p>
+                        </div>
+
+                        <form onsubmit="handleAuthSubmit(event, '${type}')">
+                            ${!isLogin ? `
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+                                    <input type="text" id="auth-name" required class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 focus:ring-4 focus:ring-amber-500/20 outline-none" placeholder="Rahul Sharma" />
+                                </div>
+                            ` : ''}
+                            <div class="mb-4">
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                                <input type="email" id="auth-email" required value="${isLogin ? 'rahul@example.com' : ''}" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 focus:ring-4 focus:ring-amber-500/20 outline-none" placeholder="you@example.com" />
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Password</label>
+                                <input type="password" id="auth-password" required value="${isLogin ? 'password123' : ''}" class="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 focus:ring-4 focus:ring-amber-500/20 outline-none" placeholder="••••••••" />
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-amber-400 to-orange-500 text-slate-900 font-bold py-4 rounded-2xl shadow-lg cursor-pointer text-lg">
+                                ${isLogin ? 'Sign In' : 'Create Account'}
+                            </button>
+                        </form>
+
+                        <div class="mt-6 text-center text-sm font-medium text-slate-500">
+                            ${isLogin ? "Don't have an account? " : "Already have an account? "}
+                            <button onclick="router.navigate('${isLogin ? 'register' : 'login'}')" class="font-bold text-amber-600 hover:underline cursor-pointer">
+                                ${isLogin ? 'Sign up' : 'Log in'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handleAuthSubmit(e, type) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            try {
+                const body = { email, password };
+                if (type === 'register') body.name = document.getElementById('auth-name').value;
+                const payload = await apiRequest(`/auth/${type}`, { method: 'POST', body: JSON.stringify(body) });
+                currentUser = payload.user;
+                if (!DB.users.some(user => user.id === currentUser.id)) DB.users.push(currentUser);
+                if (currentUser.role !== 'admin') await loadUserBookings();
+                showToast(type === 'login' ? `Welcome back, ${currentUser.name}!` : 'Account created successfully!');
+                router.navigate(currentUser.role === 'admin' ? 'admin' : 'dashboard');
+            } catch (error) {
+                showToast(error.message, 'error');
+            }
+        }
+
+        // Customer Dashboard View
+        function renderDashboard() {
+            if (!currentUser) { router.navigate('login'); return ''; }
+            const userBookings = DB.bookings.filter(b => b.customerId === currentUser.id);
+            const completion = profileCompletion();
+            const addresses = currentUser.addresses?.length ? currentUser.addresses : [{ id: 'new', label: 'Home', address: '' }];
+
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] pt-28 sm:pt-36 pb-24">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                        <div class="mb-8">
+                            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-2">Welcome back, ${currentUser.name.split(' ')[0]} 👋</h1>
+                            <p class="text-lg text-slate-500 font-medium">Manage your upcoming services and track past ones.</p>
+                        </div>
+
+                        <section class="bg-slate-950 rounded-[2.5rem] overflow-hidden shadow-2xl mb-12 text-white relative">
+                            <div class="absolute inset-0 bg-[linear-gradient(120deg,#0f172a_0%,#172554_38%,#9a3412_72%,#115e59_100%)]"></div>
+                            <div class="absolute -right-24 -top-32 w-96 h-96 rounded-full border-[32px] border-amber-300/20"></div>
+                            <div class="absolute -left-16 -bottom-40 w-80 h-80 rounded-full border-[28px] border-teal-300/15"></div>
+                            <div class="relative p-6 sm:p-10">
+                                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-10">
+                                    <div class="flex items-center gap-5">
+                                        <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-[1.75rem] bg-gradient-to-br from-amber-300 via-orange-400 to-rose-500 p-1 shadow-lg shadow-orange-950/30">
+                                            <img src="${currentUser.photo || 'https://i.pravatar.cc/300?img=12'}" alt="${currentUser.name}" class="w-full h-full rounded-[1.5rem] object-cover bg-slate-800" onerror="this.src='https://i.pravatar.cc/300?img=12'">
+                                        </div>
+                                        <div>
+                                            <div class="flex flex-wrap items-center gap-2 mb-2"><span class="text-amber-300 text-xs font-black uppercase tracking-[0.2em]">Customer profile</span><span class="px-2.5 py-1 rounded-full bg-emerald-400/15 text-emerald-300 text-[10px] font-bold uppercase">Verified account</span></div>
+                                            <h2 class="text-2xl sm:text-3xl font-black">${currentUser.name}</h2>
+                                            <p class="text-slate-400 font-medium mt-1">Member since August 2026 · ${currentUser.city || 'Add your city'}</p>
+                                        </div>
+                                    </div>
+                                    <div class="w-full lg:w-72 bg-white/10 rounded-2xl p-4 border border-white/10">
+                                        <div class="flex justify-between items-center mb-3"><span class="text-sm font-bold text-slate-300">Profile completeness</span><strong class="text-amber-300">${completion}%</strong></div>
+                                        <div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-amber-300 to-orange-500 rounded-full" style="width:${completion}%"></div></div>
+                                        <p class="text-xs text-slate-400 mt-3">Complete your details for faster bookings.</p>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                                    <div class="bg-white/10 border border-white/10 rounded-2xl p-4"><p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Email</p><p class="font-semibold truncate">${currentUser.email}</p></div>
+                                    <div class="bg-white/10 border border-white/10 rounded-2xl p-4"><p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Phone</p><p class="font-semibold">${currentUser.phone || 'Not added yet'}</p></div>
+                                    <div class="bg-white/10 border border-white/10 rounded-2xl p-4"><p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Preferred slot</p><p class="font-semibold">${currentUser.preferredTime || 'Any time'}</p></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm p-6 sm:p-10 mb-12">
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
+                                <div><p class="text-amber-600 text-xs font-black uppercase tracking-[0.2em] mb-2">Account details</p><h2 class="text-2xl sm:text-3xl font-black text-slate-900">Make HOMEZY feel like home</h2><p class="text-slate-500 font-medium mt-2">Keep your contact and service preferences ready for every booking.</p></div>
+                                <button onclick="saveProfile()" class="shrink-0 bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-5 py-3 rounded-2xl transition-colors flex items-center justify-center gap-2"><i data-lucide="save" class="w-4 h-4"></i> Save profile</button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <label class="block"><span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Full name</span><input id="profile-name" value="${currentUser.name}" class="mt-2 w-full border border-slate-200 rounded-2xl px-4 py-3.5 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 font-medium"></label>
+                                <label class="block"><span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Email address</span><input id="profile-email" type="email" value="${currentUser.email}" class="mt-2 w-full border border-slate-200 rounded-2xl px-4 py-3.5 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 font-medium"></label>
+                                <label class="block"><span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Phone number</span><input id="profile-phone" value="${currentUser.phone || ''}" placeholder="+91 9876543210" class="mt-2 w-full border border-slate-200 rounded-2xl px-4 py-3.5 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 font-medium"></label>
+                                <label class="block"><span class="text-xs font-bold text-slate-500 uppercase tracking-wider">City</span><input id="profile-city" value="${currentUser.city || ''}" placeholder="Bangalore" class="mt-2 w-full border border-slate-200 rounded-2xl px-4 py-3.5 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 font-medium"></label>
+                                <label class="block"><span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Preferred service time</span><select id="profile-time" class="mt-2 w-full border border-slate-200 rounded-2xl px-4 py-3.5 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 font-medium"><option value="" ${!currentUser.preferredTime ? 'selected' : ''}>Any time</option><option ${currentUser.preferredTime === 'Morning' ? 'selected' : ''}>Morning</option><option ${currentUser.preferredTime === 'Afternoon' ? 'selected' : ''}>Afternoon</option><option ${currentUser.preferredTime === 'Evening' ? 'selected' : ''}>Evening</option></select></label>
+                                <label class="block"><span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Profile photo URL</span><input id="profile-photo" type="url" value="${currentUser.photo || ''}" placeholder="https://..." class="mt-2 w-full border border-slate-200 rounded-2xl px-4 py-3.5 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 font-medium"></label>
+                            </div>
+                            <div class="mt-8 pt-8 border-t border-slate-100"><div class="flex items-center justify-between mb-4"><div><h3 class="font-black text-slate-900 text-lg">Saved addresses</h3><p class="text-sm text-slate-500 font-medium">Your default arrival locations.</p></div><i data-lucide="map-pin-house" class="w-6 h-6 text-amber-500"></i></div><div class="space-y-3">${addresses.map(address => `<label class="flex items-center gap-3"><span class="w-16 text-xs font-black text-slate-400 uppercase">${address.label}</span><input data-profile-address="${address.id}" data-profile-label="${address.label}" value="${address.address}" placeholder="Add a full service address" class="flex-1 border border-slate-200 rounded-2xl px-4 py-3 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 font-medium"></label>`).join('')}</div></div>
+                        </section>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+                            <div class="bg-slate-900 text-white p-8 rounded-[2rem] shadow-xl">
+                                <div class="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="calendar" class="text-amber-400 w-7 h-7"></i></div>
+                                <p class="text-slate-400 font-bold uppercase tracking-wider text-sm mb-2">Total Bookings</p>
+                                <h3 class="text-4xl font-black">${userBookings.length}</h3>
+                            </div>
+                            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                                <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="activity" class="text-blue-500 w-7 h-7"></i></div>
+                                <p class="text-slate-400 font-bold uppercase tracking-wider text-sm mb-2">Active Services</p>
+                                <h3 class="text-4xl font-black text-slate-900">${userBookings.filter(b => b.status !== 'Completed').length}</h3>
+                            </div>
+                            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                                <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="check-circle" class="text-emerald-500 w-7 h-7"></i></div>
+                                <p class="text-slate-400 font-bold uppercase tracking-wider text-sm mb-2">Completed</p>
+                                <h3 class="text-4xl font-black text-slate-900">${userBookings.filter(b => b.status === 'Completed').length}</h3>
+                            </div>
+                        </div>
+
+                        <h2 class="text-2xl font-black text-slate-900 mb-6">Recent Bookings</h2>
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                            ${userBookings.length === 0 ? `
+                                <div class="p-16 text-center text-slate-500 font-medium">No bookings found. Time to get some work done!</div>
+                            ` : `
+                                <div class="divide-y divide-slate-100">
+                                    ${userBookings.map(b => {
+                                        const service = DB.services.find(s => s.id === b.serviceId);
+                                        const cat = DB.categories.find(c => c.id === service?.categoryId);
+                                        return `
+                                            <div class="p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:bg-slate-50/50 transition-colors">
+                                                <div class="flex items-center gap-5">
+                                                    <div class="w-14 h-14 bg-gradient-to-br ${cat?.color || 'from-slate-200 to-slate-300'} rounded-2xl flex items-center justify-center text-white shadow-md flex-shrink-0">
+                                                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h4 class="font-bold text-slate-900 text-lg mb-1">${service?.title}</h4>
+                                                        <p class="font-medium text-slate-500 text-sm flex items-center gap-2">
+                                                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i> ${b.date} • ${b.time}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center gap-6 justify-between sm:justify-end w-full sm:w-auto border-t sm:border-0 pt-4 sm:pt-0">
+                                                    <div class="text-left sm:text-right">
+                                                        <p class="font-black text-slate-900 text-xl mb-0.5">₹${b.amount}</p>
+                                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">ID: ${b.id}</p>
+                                                    </div>
+                                                    <span class="text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                                                        b.status === 'Completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                                                    }">${b.status}</span>
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Admin Dashboard View
+        function renderAdmin() {
+            return `
+                <div class="min-h-screen bg-[#FAFAFA] pt-28 sm:pt-36 pb-24">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+                        <div class="mb-10">
+                            <h1 class="text-3xl sm:text-4xl font-black text-slate-900 mb-2">Admin Overview</h1>
+                            <p class="text-lg text-slate-500 font-medium">Platform metrics and performance analytics.</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                                <div class="w-14 h-14 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="dollar-sign" class="text-emerald-500 w-7 h-7"></i></div>
+                                <p class="text-slate-400 font-bold uppercase tracking-wider text-xs mb-2">Total Revenue</p>
+                                <h3 class="text-3xl font-black text-slate-900">₹1.2L</h3>
+                            </div>
+                            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                                <div class="w-14 h-14 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="activity" class="text-blue-500 w-7 h-7"></i></div>
+                                <p class="text-slate-400 font-bold uppercase tracking-wider text-xs mb-2">Active Bookings</p>
+                                <h3 class="text-3xl font-black text-slate-900">145</h3>
+                            </div>
+                            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                                <div class="w-14 h-14 bg-purple-50 border border-purple-100 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="users" class="text-purple-500 w-7 h-7"></i></div>
+                                <p class="text-slate-400 font-bold uppercase tracking-wider text-xs mb-2">Total Users</p>
+                                <h3 class="text-3xl font-black text-slate-900">2.4k</h3>
+                            </div>
+                            <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                                <div class="w-14 h-14 bg-orange-50 border border-orange-100 rounded-2xl flex items-center justify-center mb-6"><i data-lucide="briefcase" class="text-orange-500 w-7 h-7"></i></div>
+                                <p class="text-slate-400 font-bold uppercase tracking-wider text-xs mb-2">Professionals</p>
+                                <h3 class="text-3xl font-black text-slate-900">342</h3>
+                            </div>
+                        </div>
+
+                        <div class="grid lg:grid-cols-2 gap-8 mb-10">
+                            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                                <h3 class="text-xl font-black text-slate-900 mb-8">Revenue Overview</h3>
+                                <div class="h-80"><canvas id="revenueChart"></canvas></div>
+                            </div>
+                            <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
+                                <h3 class="text-xl font-black text-slate-900 mb-8">Weekly Bookings</h3>
+                                <div class="h-80"><canvas id="bookingsChart"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initAdminCharts() {
+            const revCtx = document.getElementById('revenueChart')?.getContext('2d');
+            if (revCtx) {
+                new Chart(revCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Revenue (₹)',
+                            data: [4000, 3000, 5000, 2780, 6890, 8390, 7490],
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+
+            const bookCtx = document.getElementById('bookingsChart')?.getContext('2d');
+            if (bookCtx) {
+                new Chart(bookCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Bookings',
+                            data: [24, 18, 35, 15, 48, 65, 55],
+                            backgroundColor: '#0f172a',
+                            borderRadius: 8
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false }
+                });
+            }
+        }
+
+        // Initial load
+        window.onload = function() {
+            render();
+        };
+    </script>
+</body>
+</html>
